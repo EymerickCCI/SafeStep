@@ -3,3 +3,5 @@ config/config.php
 
 # MAMP / système
 .DS_Store
+
+.env*
