@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SafeStep</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="css/style.css" />
+  <meta name="theme-color" content="#4361ee" />
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <section id="login-section">
+    <div class="login-box">
+      <h1>SafeStep</h1>
+      <p>Gestion des EPI — Techniciens BTP</p>
+      <br>
+      <form id="login-form">
+        <input type="email" id="email" placeholder="Email" required />
+        <br><br>
+        <input type="password" id="password" placeholder="Mot de passe" required />
+        <br><br>
+        <button type="submit" style="width:100%">Se connecter</button>
+        <p id="login-error"></p>
+      </form>
+    </div>
+  </section>
+
+  <!-- APP -->
+  <div id="app-section">
+    <header>
+      <strong>SafeStep</strong>
+      <div>
+        <span id="online-badge" class="badge"></span>
+        <span id="sync-badge">⏳ Sync en attente</span>
+        <span id="user-name" style="margin: 0 1rem;"></span>
+        <button id="logout-btn">Déconnexion</button>
+      </div>
+    </header>
+
+    <main>
+
+      <!-- EPIs -->
+      <div class="card">
+        <h2>Mes EPI</h2>
+        <form id="epi-form" class="form-row">
+          <input type="text"   id="tag_ref"  placeholder="Référence (ex: EPI-001)" required />
+          <select id="status" required>
+            <option value="">-- Statut --</option>
+            <option value="conforme">Conforme</option>
+            <option value="a_inspecter">À inspecter</option>
+            <option value="endommage">Endommagé</option>
+            <option value="en_maintenance">En maintenance</option>
+          </select>
+          <select id="category" required>
+            <option value="">-- Catégorie --</option>
+            <option value="casque">Casque</option>
+            <option value="harnais">Harnais</option>
+            <option value="detecteur_gaz">Détecteur gaz</option>
+            <option value="gants">Gants</option>
+            <option value="gilet">Gilet</option>
+            <option value="autre">Autre</option>
+          </select>
+          <button type="submit">Ajouter</button>
+        </form>
+        <div id="epis-list" style="margin-top: 1rem;"></div>
+      </div>
+
+      <!-- Météo -->
+      <div class="card">
+        <h2>Météo chantier</h2>
+        <form id="meteo-form" class="form-row">
+          <input type="text" id="meteo-ville" placeholder="Ville (ex: Paris)" />
+          <button type="submit">Actualiser</button>
+        </form>
+        <div id="meteo-block"></div>
+      </div>
+
+      <!-- Trafic -->
+      <div class="card">
+        <h2>Trafic chantier</h2>
+        <form id="trafic-form" class="form-row">
+          <input type="text" id="trafic-origine"      placeholder="Départ (ex: Paris)" />
+          <input type="text" id="trafic-destination"  placeholder="Arrivée (ex: Lyon)" />
+          <button type="submit">Calculer</button>
+        </form>
+        <div id="trafic-block"></div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Dexie.js (IndexedDB) -->
+  <script src="https://unpkg.com/dexie@3/dist/dexie.js"></script>
+  <!-- Offline DB -->
+  <script src="js/db.js"></script>
+  <!-- App -->
+  <script src="js/app.js"></script>
+
+</body>
+</html>
