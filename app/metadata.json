@@ -1,0 +1,5 @@
+{
+  "name": "SafeStep",
+  "description": "Gestionnaire d'EPI et de sécurité pour techniciens BTP en zones blanches avec synchronisation hors-ligne.",
+  "requestFramePermissions": ["geolocation"]
+}
