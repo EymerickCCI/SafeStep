@@ -1,0 +1,45 @@
+name: Deploy SafeStep
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Génère le .env à partir des secrets GitHub
+      - name: Créer .env
+        run: |
+          cat > .env << EOF
+          DB_HOST=${{ secrets.DB_HOST }}
+          DB_PORT=${{ secrets.DB_PORT }}
+          DB_NAME=${{ secrets.DB_NAME }}
+          DB_USER=${{ secrets.DB_USER }}
+          DB_PASS=${{ secrets.DB_PASS }}
+          JWT_SECRET=${{ secrets.JWT_SECRET }}
+          WEATHER_API_KEY=${{ secrets.OPENWEATHER }}
+          TRAFFIC_API_KEY=${{ secrets.TOMTOM }}
+          EOF
+
+      # Déploiement FTP vers l'hébergeur
+      - name: Déployer via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:   ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: ./
+          server-dir: ${{ secrets.FTP_PATH }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            .env.example
+            PLAN_ACTION.md
+            DEPLOY.md
+            SafeStep.postman_collection.json
+            secret.docx

@@ -1,5 +1,5 @@
-# Clés API et config sensible — ne jamais commiter
-config/config.php
+# Secrets — ne jamais commiter
+.env
 
 # MAMP / système
 .DS_Store
