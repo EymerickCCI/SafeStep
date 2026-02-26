@@ -1,0 +1,5 @@
+RewriteEngine On
+
+# Passe le header Authorization à PHP (MAMP/Apache le strip sinon)
+RewriteCond %{HTTP:Authorization} .
+RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
