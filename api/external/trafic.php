@@ -25,12 +25,37 @@ if (!$origine || !$destination) {
     exit;
 }
 
-// Appel API TomTom Routing (remplacer la clé par la vôtre)
-$apiKey = 'VOTRE_CLE_TOMTOM';
+$apiKey = '5hMuoeGLB2iNFDsVVair0pyAA0BkCz2u';
 
-// Géocodage simple : on construit l'URL avec les noms de villes
-$url = "https://api.tomtom.com/routing/1/calculateRoute/" . urlencode($origine) . ":" . urlencode($destination) . "/json?key={$apiKey}&travelMode=car&traffic=true";
+// Étape 1 : Géocodage ville → coordonnées GPS via TomTom Search API
+function geocode(string $ville, string $apiKey): ?string {
+    $url      = "https://api.tomtom.com/search/2/geocode/" . urlencode($ville) . ".json?key={$apiKey}&limit=1";
+    $response = @file_get_contents($url);
+    if (!$response) return null;
+    $data = json_decode($response, true);
+    $pos  = $data['results'][0]['position'] ?? null;
+    if (!$pos) return null;
+    return $pos['lat'] . ',' . $pos['lon'];
+}
 
+$coordOrigine     = geocode($origine, $apiKey);
+$coordDestination = geocode($destination, $apiKey);
+
+if (!$coordOrigine || !$coordDestination) {
+    // Fallback mock si géocodage échoue
+    echo json_encode([
+        'origine'       => $origine,
+        'destination'   => $destination,
+        'duree_minutes' => rand(15, 90),
+        'distance_km'   => rand(10, 80),
+        'trafic_inclus' => false,
+        'note'          => 'Géocodage impossible, données estimées',
+    ]);
+    exit;
+}
+
+// Étape 2 : Calcul d'itinéraire avec coordonnées réelles
+$url      = "https://api.tomtom.com/routing/1/calculateRoute/{$coordOrigine}:{$coordDestination}/json?key={$apiKey}&travelMode=car&traffic=true";
 $response = @file_get_contents($url);
 
 if ($response !== false) {
@@ -42,22 +67,22 @@ if ($response !== false) {
         $km      = round($route['lengthInMeters'] / 1000, 1);
 
         echo json_encode([
-            'origine'          => $origine,
-            'destination'      => $destination,
-            'duree_minutes'    => $minutes,
-            'distance_km'      => $km,
-            'trafic_inclus'    => true,
+            'origine'       => $origine,
+            'destination'   => $destination,
+            'duree_minutes' => $minutes,
+            'distance_km'   => $km,
+            'trafic_inclus' => true,
         ]);
         exit;
     }
 }
 
-// Fallback mock si l'API est indisponible ou non configurée
+// Fallback mock si l'API routing échoue
 echo json_encode([
     'origine'       => $origine,
     'destination'   => $destination,
     'duree_minutes' => rand(15, 90),
     'distance_km'   => rand(10, 80),
     'trafic_inclus' => false,
-    'note'          => 'Données estimées (API trafic non configurée)',
+    'note'          => 'Données estimées (erreur API routing)',
 ]);
