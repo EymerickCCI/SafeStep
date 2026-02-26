@@ -26,8 +26,8 @@ jobs:
           define('JWT_SECRET', '${{ secrets.JWT_SECRET }}');
           define('JWT_EXPIRE', 3600);
 
-          define('OPENWEATHER_API_KEY', '${{ secrets.OPENWEATHER_API_KEY }}');
-          define('TOMTOM_API_KEY',      '${{ secrets.TOMTOM_API_KEY }}');
+          define('OPENWEATHER_API_KEY', '${{ secrets.OPENWEATHER }}');
+          define('TOMTOM_API_KEY',      '${{ secrets.TOMTOM }}');
           EOF
 
       # Déploiement FTP vers l'hébergeur
