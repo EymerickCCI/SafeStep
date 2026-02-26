@@ -14,3 +14,4 @@ define('JWT_EXPIRE', 3600);
 
 // APIs externes
 define('OPENWEATHER_API_KEY', 'VOTRE_CLE_OPENWEATHERMAP');
+define('TOMTOM_API_KEY',      'VOTRE_CLE_TOMTOM');

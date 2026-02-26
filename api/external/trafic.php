@@ -6,6 +6,7 @@ header('Access-Control-Allow-Headers: Content-Type, Authorization');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') exit;
 
+require_once __DIR__ . '/../../config/config.php';
 require_once __DIR__ . '/../../middleware/auth.php';
 
 $user = authenticate();
@@ -25,7 +26,7 @@ if (!$origine || !$destination) {
     exit;
 }
 
-$apiKey = '5hMuoeGLB2iNFDsVVair0pyAA0BkCz2u';
+$apiKey = TOMTOM_API_KEY;
 
 // Étape 1 : Géocodage ville → coordonnées GPS via TomTom Search API
 function geocode(string $ville, string $apiKey): ?string {
@@ -86,3 +87,4 @@ echo json_encode([
     'trafic_inclus' => false,
     'note'          => 'Données estimées (erreur API routing)',
 ]);
+    

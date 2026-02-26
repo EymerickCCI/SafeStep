@@ -1,0 +1,48 @@
+name: Deploy SafeStep
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Génère config.php à partir des secrets GitHub
+      - name: Créer config.php
+        run: |
+          cat > config/config.php << 'EOF'
+          <?php
+          define('DB_HOST', '${{ secrets.DB_HOST }}');
+          define('DB_PORT', '${{ secrets.DB_PORT }}');
+          define('DB_NAME', '${{ secrets.DB_NAME }}');
+          define('DB_USER', '${{ secrets.DB_USER }}');
+          define('DB_PASS', '${{ secrets.DB_PASS }}');
+
+          define('JWT_SECRET', '${{ secrets.JWT_SECRET }}');
+          define('JWT_EXPIRE', 3600);
+
+          define('OPENWEATHER_API_KEY', '${{ secrets.OPENWEATHER_API_KEY }}');
+          define('TOMTOM_API_KEY',      '${{ secrets.TOMTOM_API_KEY }}');
+          EOF
+
+      # Déploiement FTP vers l'hébergeur
+      - name: Déployer via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server:   ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USER }}
+          password: ${{ secrets.FTP_PASS }}
+          local-dir: ./
+          server-dir: ${{ secrets.FTP_PATH }}
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            PLAN_ACTION.md
+            DEPLOY.md
+            SafeStep.postman_collection.json
